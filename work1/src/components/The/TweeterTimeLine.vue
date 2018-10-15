@@ -27,13 +27,15 @@ export default {
 
 <style lang="scss" scoped>
 .c-tweeter-time-line {
+  position: relative;
   margin: 0;
   padding: 0 15px 15px 0;
 
   &__item {
     margin: 15px 0 0;
     padding: 0;
-    list-style: none
+    list-style: none;
+    width: 100%;
   }
 }
 
@@ -59,6 +61,7 @@ export default {
 
   &-leave-active {
     position: absolute;
+    width: calc(100% - 20px);
   }
 }
 </style>
