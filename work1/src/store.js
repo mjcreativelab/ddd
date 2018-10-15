@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import moment from 'moment/moment'
-import 'moment-timezone';
+import 'moment-timezone'
+
+import uuid from 'uuid/v1'
 
 Vue.use(Vuex)
 
@@ -10,6 +12,7 @@ const SetTweetsList = 'SET_TWEETS_LIST'
 export const tweetsList = 'TWEETS_LIST'
 export const LoadTweet = 'LOAD_TWEET'
 export const SaveTweet = 'SAVE_TWEET'
+export const DeleteTweet = 'DELETE_TWEET'
 
 const validTweetData = (tweetData) => {
   if (tweetData.content === '') throw 'ツイートなし'
@@ -20,6 +23,7 @@ const validTweetData = (tweetData) => {
 
 const convertTweetData = (tweetData) => {
   return {
+    id: uuid(),
     content: tweetData.content,
     authorName: tweetData.authorName,
     createdDateTime: tweetData.createdDateTime
@@ -55,8 +59,7 @@ export default new Vuex.Store({
   state: {
     tweetsList: [
       {
-        id: 0,
-        content: 'Now Loading...',
+        content: 'Now Loading...'
       }
     ]
   },
@@ -79,15 +82,15 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async [LoadTweet] ({ commit }) {
+    async [LoadTweet]({ commit }) {
       // API 経由でデータを取得
       const tweetsList = await dummuyGetTweetsList()
 
       commit(SetTweetsList, tweetsList)
     },
-    [SaveTweet] ({ state, commit }, payload) {
+    [SaveTweet]({ state, commit }, tweetData) {
       try {
-        validTweetData(payload)
+        validTweetData(tweetData)
       }
       catch (error) {
         console.log(error)
@@ -95,16 +98,22 @@ export default new Vuex.Store({
       }
 
       const tweetsList = state.tweetsList
-      const currentNumberOfTweets = tweetsList.length
-      const tweet = convertTweetData(payload)
-
-      tweet.id = currentNumberOfTweets + 1
+      const tweet = convertTweetData(tweetData)
 
       // 本来ならここで DB 保存
       // 保存が成功したら最新のリストを取得
       tweetsList.unshift(tweet)
 
       commit(SetTweetsList, tweetsList)
+    },
+    [DeleteTweet]({ state, commit }, id) {
+      const tweetsList = state.tweetsList
+      const filteredTweetList = tweetsList.filter(
+        tweet =>
+          tweet.id !== id
+        )
+
+      commit(SetTweetsList, filteredTweetList)
     }
   }
 })
