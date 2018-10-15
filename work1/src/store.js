@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import moment from 'moment/moment'
+import 'moment-timezone';
+
 Vue.use(Vuex)
 
 const SetTweetsList = 'SET_TWEETS_LIST'
@@ -66,6 +69,11 @@ export default new Vuex.Store({
     [tweetsList]: ({ tweetsList }) => {
       // 並び順や絞り込みをする場合はここであれこれする
       const refineConditions = ''
+
+      tweetsList.map(
+        tweet =>
+          tweet.createdDateTime = moment(tweet.createdDateTime).tz("Asia/Tokyo").format('YYYY/MM/DD HH:mm')
+      )
 
       return tweetsList
     }

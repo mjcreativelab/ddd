@@ -19,7 +19,7 @@ export default {
       this.$store.dispatch(SaveTweet, {
         content: this.tweetContent,
         authorName: this.tweetAuthorName,
-        createdDateTime: moment().format('YYYY/MM/DD HH:mm')
+        createdDateTime: moment().utc().format()
       })
 
       this.init()
